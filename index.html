@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>P&L Dashboard</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro', system-ui, sans-serif;
+  background: #0d1117;
+  color: #e6edf3;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Password gate */
+#gate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 16px;
+}
+#gate input {
+  background: #161b22;
+  border: 1px solid #30363d;
+  color: #e6edf3;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 18px;
+  text-align: center;
+  width: 220px;
+  outline: none;
+}
+#gate input:focus { border-color: #58a6ff; }
+#gate .error { color: #f85149; font-size: 14px; display: none; }
+
+/* Dashboard */
+#dashboard { display: none; width: 100%; max-width: 480px; padding: 20px 16px; }
+h1 {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 16px;
+  color: #8b949e;
+}
+.updated {
+  text-align: center;
+  font-size: 12px;
+  color: #484f58;
+  margin-bottom: 20px;
+}
+
+/* Table */
+table { width: 100%; border-collapse: collapse; }
+th {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #484f58;
+  font-weight: 500;
+  padding: 8px 4px;
+  text-align: right;
+  border-bottom: 1px solid #21262d;
+}
+th:first-child { text-align: left; }
+td {
+  padding: 14px 4px;
+  text-align: right;
+  font-size: 15px;
+  border-bottom: 1px solid #161b22;
+}
+td:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: #8b949e;
+}
+tr.total td {
+  font-weight: 700;
+  font-size: 18px;
+  border-bottom: 2px solid #30363d;
+}
+tr.total td:first-child { color: #e6edf3; }
+
+.green { color: #3fb950; }
+.red { color: #f85149; }
+.neutral { color: #8b949e; }
+
+/* Big P&L hero */
+.hero {
+  text-align: center;
+  margin-bottom: 24px;
+  padding: 20px 0;
+}
+.hero .label { font-size: 13px; color: #484f58; margin-bottom: 4px; }
+.hero .amount { font-size: 48px; font-weight: 700; }
+.hero .stats { font-size: 14px; color: #8b949e; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <input type="password" id="pw" placeholder="Password" autofocus>
+  <div class="error" id="err">Wrong password</div>
+</div>
+
+<div id="dashboard">
+  <h1>Polymarket P&L</h1>
+  <div class="hero">
+    <div class="label">Today</div>
+    <div class="amount" id="hero-pnl">--</div>
+    <div class="stats" id="hero-stats">-- trades | --% WR</div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Asset</th><th>P&L</th><th>Trades</th><th>WR</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <div class="updated" id="updated"></div>
+</div>
+
+<script>
+const HASH = '0acbf84757d057b4eaf593501359e26e0504de13993d6d08f8a383e97bdec5cd';
+
+async function sha256(s) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function checkAuth() {
+  if (sessionStorage.getItem('authed') === '1') return true;
+  return false;
+}
+
+document.getElementById('pw').addEventListener('keydown', async function(e) {
+  if (e.key !== 'Enter') return;
+  const h = await sha256(this.value);
+  if (h === HASH) {
+    sessionStorage.setItem('authed', '1');
+    showDashboard();
+  } else {
+    document.getElementById('err').style.display = 'block';
+    this.value = '';
+  }
+});
+
+function fmt(n) {
+  const s = Math.abs(n).toFixed(2);
+  return (n >= 0 ? '+$' : '-$') + s;
+}
+
+function cls(n) {
+  return n > 0 ? 'green' : n < 0 ? 'red' : 'neutral';
+}
+
+function renderRow(name, d, isTotal) {
+  const tr = document.createElement('tr');
+  if (isTotal) tr.className = 'total';
+  tr.innerHTML =
+    '<td>' + name + '</td>' +
+    '<td class="' + cls(d.pnl) + '">' + fmt(d.pnl) + '</td>' +
+    '<td>' + d.trades + '</td>' +
+    '<td>' + (d.trades > 0 ? d.wr.toFixed(1) + '%' : '--') + '</td>';
+  return tr;
+}
+
+async function loadData() {
+  try {
+    const r = await fetch('data.json?t=' + Date.now());
+    const j = await r.json();
+    const d = j.daily;
+
+    // Hero
+    const t = d.total;
+    const hero = document.getElementById('hero-pnl');
+    hero.textContent = fmt(t.pnl);
+    hero.className = 'amount ' + cls(t.pnl);
+    document.getElementById('hero-stats').textContent =
+      t.trades + ' trades | ' + (t.trades > 0 ? t.wr.toFixed(1) : '0') + '% WR';
+
+    // Table rows
+    const tbody = document.getElementById('rows');
+    tbody.innerHTML = '';
+    tbody.appendChild(renderRow('BTC', d.btc, false));
+    tbody.appendChild(renderRow('ETH', d.eth, false));
+    tbody.appendChild(renderRow('SOL', d.sol, false));
+    tbody.appendChild(renderRow('XRP', d.xrp, false));
+
+    // Updated
+    const dt = new Date(j.updated);
+    document.getElementById('updated').textContent = 'Updated ' + dt.toLocaleTimeString();
+  } catch(e) {
+    console.error('Failed to load data:', e);
+  }
+}
+
+async function showDashboard() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('dashboard').style.display = 'block';
+  await loadData();
+  setInterval(loadData, 60000);
+}
+
+(async () => {
+  if (await checkAuth()) showDashboard();
+})();
+</script>
+</body>
+</html>
