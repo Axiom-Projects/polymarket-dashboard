@@ -1,10 +1,10 @@
 {
-  "updated": "2026-03-08T00:08:06Z",
+  "updated": "2026-03-08T00:13:07Z",
   "daily": {
     "btc": {
-      "pnl": 18.48,
-      "trades": 1,
-      "wins": 1,
+      "pnl": 28.81,
+      "trades": 2,
+      "wins": 2,
       "wr": 100.0
     },
     "eth": {
@@ -20,15 +20,15 @@
       "wr": 0
     },
     "xrp": {
-      "pnl": 0.58,
-      "trades": 1,
-      "wins": 1,
+      "pnl": 1.37,
+      "trades": 2,
+      "wins": 2,
       "wr": 100.0
     },
     "total": {
-      "pnl": 19.06,
-      "trades": 2,
-      "wins": 2,
+      "pnl": 30.18,
+      "trades": 4,
+      "wins": 4,
       "wr": 100.0
     }
   }
