@@ -1,11 +1,11 @@
 {
-  "updated": "2026-03-08T23:34:21Z",
+  "updated": "2026-03-09T00:04:23Z",
   "daily": {
     "btc": {
-      "pnl": 230.24,
-      "trades": 42,
-      "wins": 26,
-      "wr": 61.9
+      "pnl": 0,
+      "trades": 0,
+      "wins": 0,
+      "wr": 0
     },
     "eth": {
       "pnl": 0,
@@ -14,22 +14,22 @@
       "wr": 0
     },
     "sol": {
-      "pnl": -2.05,
-      "trades": 2,
+      "pnl": 0,
+      "trades": 0,
       "wins": 0,
-      "wr": 0.0
+      "wr": 0
     },
     "xrp": {
-      "pnl": -4.09,
-      "trades": 17,
-      "wins": 8,
-      "wr": 47.1
+      "pnl": 0,
+      "trades": 0,
+      "wins": 0,
+      "wr": 0
     },
     "total": {
-      "pnl": 224.1,
-      "trades": 61,
-      "wins": 34,
-      "wr": 55.7
+      "pnl": 0,
+      "trades": 0,
+      "wins": 0,
+      "wr": 0
     }
   }
 }
