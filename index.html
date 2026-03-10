@@ -98,6 +98,67 @@ tr.total td:first-child { color: #e6edf3; }
 .hero .label { font-size: 13px; color: #484f58; margin-bottom: 4px; }
 .hero .amount { font-size: 48px; font-weight: 700; }
 .hero .stats { font-size: 14px; color: #8b949e; margin-top: 8px; }
+
+/* Chart */
+.chart-section {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid #21262d;
+}
+.chart-title {
+  font-size: 13px;
+  color: #484f58;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 12px;
+  height: 140px;
+  padding: 0 8px;
+}
+.bar-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 100px;
+}
+.bar-value {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.bar-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  height: 100px;
+}
+.bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  min-height: 4px;
+  transition: height 0.3s ease;
+}
+.bar.green-bar { background: #238636; }
+.bar.red-bar { background: #da3633; }
+.bar-label {
+  font-size: 12px;
+  color: #8b949e;
+  margin-top: 8px;
+}
+.bar-meta {
+  font-size: 11px;
+  color: #484f58;
+  margin-top: 2px;
+}
 </style>
 </head>
 <body>
@@ -120,6 +181,10 @@ tr.total td:first-child { color: #e6edf3; }
     </thead>
     <tbody id="rows"></tbody>
   </table>
+  <div class="chart-section">
+    <div class="chart-title">Last 4 Days</div>
+    <div class="chart" id="chart"></div>
+  </div>
   <div class="updated" id="updated"></div>
 </div>
 
@@ -168,6 +233,54 @@ function renderRow(name, d, isTotal) {
   return tr;
 }
 
+function fmtDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()];
+}
+
+function renderChart(history) {
+  const chart = document.getElementById('chart');
+  chart.innerHTML = '';
+  if (!history || history.length === 0) return;
+
+  const maxAbs = Math.max(...history.map(h => Math.abs(h.pnl)), 1);
+
+  history.forEach(h => {
+    const group = document.createElement('div');
+    group.className = 'bar-group';
+
+    const value = document.createElement('div');
+    value.className = 'bar-value ' + cls(h.pnl);
+    value.textContent = fmt(h.pnl);
+
+    const wrap = document.createElement('div');
+    wrap.className = 'bar-wrap';
+
+    const bar = document.createElement('div');
+    bar.className = 'bar ' + (h.pnl >= 0 ? 'green-bar' : 'red-bar');
+    const pct = Math.max(Math.abs(h.pnl) / maxAbs * 100, 4);
+    bar.style.height = pct + '%';
+
+    wrap.appendChild(bar);
+
+    const label = document.createElement('div');
+    label.className = 'bar-label';
+    label.textContent = fmtDate(h.date);
+
+    const meta = document.createElement('div');
+    meta.className = 'bar-meta';
+    meta.textContent = h.trades + 't | ' + h.wr.toFixed(0) + '%';
+
+    group.appendChild(value);
+    group.appendChild(wrap);
+    group.appendChild(label);
+    group.appendChild(meta);
+    chart.appendChild(group);
+  });
+}
+
 async function loadData() {
   try {
     const r = await fetch('data.json?t=' + Date.now());
@@ -189,6 +302,9 @@ async function loadData() {
     tbody.appendChild(renderRow('ETH', d.eth, false));
     tbody.appendChild(renderRow('SOL', d.sol, false));
     tbody.appendChild(renderRow('XRP', d.xrp, false));
+
+    // Chart
+    if (j.history) renderChart(j.history);
 
     // Updated
     const dt = new Date(j.updated);
