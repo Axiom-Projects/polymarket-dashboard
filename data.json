@@ -1,11 +1,11 @@
 {
-  "updated": "2026-04-14T23:20:45Z",
+  "updated": "2026-04-15T00:00:47Z",
   "daily": {
     "btc": {
-      "pnl": 2.46,
-      "trades": 12,
-      "wins": 5,
-      "wr": 41.7
+      "pnl": 0,
+      "trades": 0,
+      "wins": 0,
+      "wr": 0
     },
     "eth": {
       "pnl": 0,
@@ -26,20 +26,13 @@
       "wr": 0
     },
     "total": {
-      "pnl": 2.46,
-      "trades": 12,
-      "wins": 5,
-      "wr": 41.7
+      "pnl": 0,
+      "trades": 0,
+      "wins": 0,
+      "wr": 0
     }
   },
   "history": [
-    {
-      "date": "2026-04-11",
-      "pnl": 91.25,
-      "trades": 15,
-      "wins": 9,
-      "wr": 60.0
-    },
     {
       "date": "2026-04-12",
       "pnl": 206.49,
