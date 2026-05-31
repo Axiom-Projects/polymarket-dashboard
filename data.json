@@ -1,9 +1,9 @@
 {
-  "updated": "2026-05-31T13:04:19Z",
+  "updated": "2026-05-31T13:19:52Z",
   "daily": {
     "btc": {
-      "pnl": -38.43,
-      "trades": 5,
+      "pnl": -43.43,
+      "trades": 6,
       "wins": 0,
       "wr": 0.0
     },
@@ -26,8 +26,8 @@
       "wr": 0
     },
     "total": {
-      "pnl": -38.43,
-      "trades": 5,
+      "pnl": -43.43,
+      "trades": 6,
       "wins": 0,
       "wr": 0.0
     }
@@ -35,8 +35,8 @@
   "history": [
     {
       "date": "2026-05-31",
-      "pnl": -38.43,
-      "trades": 5,
+      "pnl": -43.43,
+      "trades": 6,
       "wins": 0,
       "wr": 0.0
     }
