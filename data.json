@@ -1,35 +1,35 @@
 {
-  "updated": "2026-07-02T06:21:39Z",
+  "updated": "2026-07-02T06:31:42Z",
   "daily": {
     "btc": {
-      "pnl": -17.57,
-      "trades": 19,
-      "wins": 14,
-      "wr": 73.7
+      "pnl": -12.98,
+      "trades": 20,
+      "wins": 15,
+      "wr": 75.0
     },
     "eth": {
-      "pnl": 1.66,
-      "trades": 9,
+      "pnl": -2.78,
+      "trades": 10,
       "wins": 8,
-      "wr": 88.9
+      "wr": 80.0
     },
     "sol": {
-      "pnl": -6.15,
-      "trades": 14,
+      "pnl": -10.84,
+      "trades": 15,
       "wins": 10,
-      "wr": 71.4
+      "wr": 66.7
     },
     "xrp": {
-      "pnl": -5.61,
-      "trades": 10,
-      "wins": 7,
-      "wr": 70.0
+      "pnl": -4.56,
+      "trades": 11,
+      "wins": 8,
+      "wr": 72.7
     },
     "total": {
-      "pnl": -27.67,
-      "trades": 52,
-      "wins": 39,
-      "wr": 75.0
+      "pnl": -31.16,
+      "trades": 56,
+      "wins": 41,
+      "wr": 73.2
     }
   },
   "history": [
@@ -56,10 +56,10 @@
     },
     {
       "date": "2026-07-02",
-      "pnl": -27.67,
-      "trades": 52,
-      "wins": 39,
-      "wr": 75.0
+      "pnl": -31.16,
+      "trades": 56,
+      "wins": 41,
+      "wr": 73.2
     }
   ]
 }
